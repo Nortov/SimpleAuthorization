@@ -3,13 +3,12 @@ import { User } from "../models/usermodel.js";
 
 export async function checkAuth(req, res, next) {
     try {
-        const { username, email, password } = req.body;
         
         const token = req.headers['authorization']?.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.userId = decoded.userId
 
-        const user = await User.findOne({username})
+        const user = await User.findById(req.userId)
         if(!user){
             res.status(404).json({
                 error: "Такого пользователя не существует"
